@@ -1,0 +1,112 @@
+import time
+import random
+
+class Command():
+    def __init__(self, state="off", volume=0, channel_list="TRT, NTV, DMAX"):
+        self.state = state
+        self.volume = volume
+        self.channel_list = channel_list
+
+    def tv_on(self):
+        if self.state == "on":
+            print("TV is already on!")
+        else:
+            print("TV is on.")
+            self.state = "on"  
+
+    def tv_off(self):
+        if self.state == "off":
+            print("TV is already off!")
+        else:
+            print("TV is off...")
+            self.state = "off"
+
+    def adjust_volume(self):
+        while True:
+            answer = input("Volume down : '<' \nVolume up : '>' \nExit : 'q'")
+            
+            if answer == '<':
+                if self.volume != 0:
+                    self.volume -= 1
+                    print("Volume :", self.volume)
+            
+            elif answer == '>':
+                if self.volume != 31:
+                    self.volume += 1
+                    print("Volume :", self.volume)
+            
+            elif answer.lower() == 'q':
+                print("Volume adjustment finished.")
+                break
+
+            else:
+                print("Invalid input! Please enter '<', '>', or 'q'.")
+
+    def channel_add(self, channel_name):
+        print("Channel is being added....")
+        time.sleep(1)
+        self.channel_list.append(channel_name)
+        print("Channels are added.")
+
+    def random_channel(self):
+        random_channel_index = random.randint(0, len(self.channel_list) - 1)
+        self.current_channel = self.channel_list[random_channel_index]
+        print("Current channel:", self.current_channel)
+
+    def __len__(self):
+        return len(self.channel_list)
+
+    def __str__(self):
+        return "TV status: {} \nTV volume: {}\nChannel list: {}\nCurrent channel: {}".format(
+            self.state, self.volume, self.channel_list, getattr(self, 'current_channel', 'None')
+        )
+
+
+tv = Command()
+
+print(
+    """
+    1. TV on
+    2. TV off
+    3. Volume
+    4. Channel add
+    5. Status channel
+    6. Random channel
+    7. TV data
+    Enter "q" for exit
+    """)
+
+while True:
+    process = input("Enter process: ")
+
+    if process == "q":
+        print("Program is finishing...")
+        break
+    
+    elif process == "1":
+        tv.tv_on()
+
+    elif process == "2":
+        tv.tv_off()
+
+    elif process == "3":
+        tv.adjust_volume()
+
+    elif process == "4":
+        channel_names = input("Separate channels to be added with ','")
+        channel_list = channel_names.split(",")
+
+        for add_channel in channel_list:
+            tv.channel_add(add_channel)
+    
+    elif process == "5":
+        print("Channel number:", len(tv))
+    
+    elif process == "6":
+        tv.random_channel()
+
+    elif process == "7":
+        print(tv)
+
+    else:
+        print("Invalid process!")
